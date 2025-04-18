@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+build:
+  artifacts:
+    - image: yourrepo/todo-frontend
+      context: frontend
+    - image: yourrepo/todo-backend1
+      context: backend1
+    - image: yourrepo/todo-backend2
+      context: backend2
+deploy:
+  helm:
+    releases:
+      - name: todo-app
+        chartPath: ./todo-app
+        valuesFiles:
+          - ./todo-app/values.yaml
