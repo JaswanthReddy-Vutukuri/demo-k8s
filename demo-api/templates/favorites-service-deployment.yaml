@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.dev.yaml
+    kompose.version: 1.35.0 (9532ceef3)
+  labels:
+    io.kompose.service: favorites-service
+  name: favorites-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: favorites-service
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.dev.yaml
+        kompose.version: 1.35.0 (9532ceef3)
+      labels:
+        io.kompose.service: favorites-service
+    spec:
+      containers:
+        - env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "83"
+          image: favorites-service
+          name: favorites-service
+          ports:
+            - containerPort: 83
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/data
+              name: favorites-data
+      restartPolicy: Always
+      volumes:
+        - name: favorites-data
+          persistentVolumeClaim:
+            claimName: favorites-data
